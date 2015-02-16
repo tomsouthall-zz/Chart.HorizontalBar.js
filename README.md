@@ -17,6 +17,12 @@ If you want to fork this and clean it up, feel free. I'm sure there's plenty of 
 
 ## Usage
 
+Install via bower.
+
+```bash
+$ bower install chart.horizontalbar
+```
+
 This plugin can be used in exactly the same way as the standard (vertical) Bar charts in Chart.js.
 
 All the same options apply. Tooltips are not working, but it wouldn't take much work to add them in if someone wants to take a crack at it.
