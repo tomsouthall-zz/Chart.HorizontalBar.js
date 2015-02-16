@@ -6,7 +6,7 @@
   "author": "tomsouthall",
   "main": "Chart.HorizontalBar.js",
   "dependencies": {
-    "Chart.js": ">= 1.0.1-beta.4"
+    "chartjs": ">= 1.0.1-beta.4"
   },
   "keywords": [
     "Chart.js",
