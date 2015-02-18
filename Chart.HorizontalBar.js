@@ -67,10 +67,10 @@
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
-			ctx.moveTo(this.left, bottom);
-			ctx.lineTo(this.left, top);
-			ctx.lineTo(right, top);
-			ctx.lineTo(right, bottom);
+			ctx.moveTo(this.left, top);
+  			ctx.lineTo(right, top);
+  			ctx.lineTo(right, bottom);
+			ctx.lineTo(this.left, bottom);
 			ctx.fill();
 			if (this.showStroke){
 				ctx.stroke();
