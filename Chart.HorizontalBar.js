@@ -67,17 +67,17 @@
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
-			ctx.moveTo(this.left, bottom);
-			ctx.lineTo(this.left, top);
-			ctx.lineTo(right, top);
-			ctx.lineTo(right, bottom);
+			ctx.moveTo(this.left, top);
+  			ctx.lineTo(right, top);
+  			ctx.lineTo(right, bottom);
+			ctx.lineTo(this.left, bottom);
 			ctx.fill();
 			if (this.showStroke){
 				ctx.stroke();
 			}
 		},
 		inRange : function(chartX,chartY){
-			return (chartY >= this.y - this.height/2 && chartY <= this.y + this.height/2) && (chartX >= this.left && chartX <= this.right);
+  			return (chartX >= this.left && chartX <= this.x && chartY >= (this.y - this.height/2) && chartY <= (this.y + this.height/2));
 		}
 	});
 
