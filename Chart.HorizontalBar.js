@@ -20,7 +20,7 @@
 		scaleGridLineWidth : 1,
 
 		//Boolean - Whether to show horizontal lines (except X axis)
-		scaleShowHorizontalLines: true,
+		scaleShowHorizontalLines: false,
 
 		//Boolean - Whether to show vertical lines (except Y axis)
 		scaleShowVerticalLines: true,
@@ -67,18 +67,15 @@
 
 			// It'd be nice to keep this class totally generic to any rectangle
 			// and simply specify which border to miss out.
-			ctx.moveTo(this.left, top);
-  			ctx.lineTo(right, top);
-  			ctx.lineTo(right, bottom);
-			ctx.lineTo(this.left, bottom);
+			ctx.moveTo(this.left, bottom);
+			ctx.lineTo(this.left, top);
+			ctx.lineTo(right, top);
+			ctx.lineTo(right, bottom);
 			ctx.fill();
 			if (this.showStroke){
 				ctx.stroke();
 			}
 		},
-		inRange : function(chartX,chartY){
-  			return (chartX >= this.left && chartX <= this.x && chartY >= (this.y - this.height/2) && chartY <= (this.y + this.height/2));
-		}
 	});
 
 	Chart.Type.extend({
@@ -358,9 +355,13 @@
 
 			for (var datasetIndex = 0; datasetIndex < this.datasets.length; datasetIndex++) {
 				for (barIndex = 0; barIndex < this.datasets[datasetIndex].bars.length; barIndex++) {
-					if (this.datasets[datasetIndex].bars[barIndex].inRange(eventPosition.x,eventPosition.y)){
-						helpers.each(this.datasets, datasetIterator);
-						return barsArray;
+					if(this.datasets[datasetIndex].bars[barIndex].x > eventPosition.x) {
+						if((this.datasets[datasetIndex].bars[barIndex].y + this.datasets[datasetIndex].bars[barIndex].height) > eventPosition.y){
+							if(eventPosition.y >= (this.datasets[datasetIndex].bars[barIndex].y - this.datasets[datasetIndex].bars[barIndex].height)) {
+								helpers.each(this.datasets, datasetIterator);
+								return barsArray;
+							}							
+						}
 					}
 				}
 			}
