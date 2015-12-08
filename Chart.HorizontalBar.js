@@ -177,7 +177,8 @@
     				ctx.font = this.font;
     				helpers.each(this.yLabels,function(labelString,index){
     					var yLabelCenter = this.endPoint - (yLabelGap * index),
-    						  linePositionY = Math.round(yLabelCenter);
+							linePositionY = Math.round(yLabelCenter),
+							drawHorizontalLine = this.showHorizontalLines;
 
     					yLabelCenter -= yLabelGap / 2;
 
@@ -186,7 +187,13 @@
     					if (this.showLabels){
     						ctx.fillText(labelString,xStart - 10,yLabelCenter);
     					}
-    					ctx.beginPath();
+
+                        if (index === 0 && !drawHorizontalLine) {
+                            drawHorizontalLine = true;
+                        }
+                        if (drawHorizontalLine){
+                            ctx.beginPath();
+                        }
     					if (index > 0){
     						// This is a grid line in the centre, so drop that
     						ctx.lineWidth = this.gridLineWidth;
@@ -199,10 +206,12 @@
 
     					linePositionY += helpers.aliasPixel(ctx.lineWidth);
 
-    					ctx.moveTo(xStart, linePositionY);
-    					ctx.lineTo(this.width, linePositionY);
-    					ctx.stroke();
-    					ctx.closePath();
+                        if(drawHorizontalLine){
+                            ctx.moveTo(xStart, linePositionY);
+                            ctx.lineTo(this.width, linePositionY);
+                            ctx.stroke();
+                            ctx.closePath();
+                        }
 
     					ctx.lineWidth = this.lineWidth;
     					ctx.strokeStyle = this.lineColor;
