@@ -40,6 +40,8 @@
 		//String - A legend template
 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
+                //String - axis to stack bars on
+		stacked : 'none'
 	};
 
   Chart.HorizontalRectangle = Chart.Element.extend({
@@ -116,7 +118,7 @@
 					//The padding between datasets is to the right of each bar, providing that there are more than 1 dataset
 					var baseHeight = this.calculateBaseHeight() - ((datasetCount) * options.barDatasetSpacing);
 
-					return (baseHeight / datasetCount);
+					return (options.stacked == "z" || options.stacked == "x") ? baseHeight : (baseHeight / datasetCount);
 				},
 
 				calculateXInvertXY : function(value) {
@@ -133,7 +135,7 @@
 					var yHeight = this.calculateBaseHeight(),
 						yAbsolute = (this.endPoint + this.calculateYInvertXY(barIndex) - (yHeight / 2)) - 5,
 						barHeight = this.calculateBarHeight(datasetCount);
-					if (datasetCount > 1) yAbsolute = yAbsolute + (barHeight * (datasetIndex - 1)) - (datasetIndex * options.barDatasetSpacing) + barHeight/2;
+					if (datasetCount > 1 && (options.stacked != "z" || options.stacked != "x")) yAbsolute = yAbsolute + (barHeight * (datasetIndex - 1)) - (datasetIndex * options.barDatasetSpacing) + barHeight/2;
 					return yAbsolute;
 				},
 
@@ -381,9 +383,18 @@
 
 			var dataTotal = function(){
 				var values = [];
-				self.eachBars(function(bar){
+				if (self.options.stacked == 'x') {
+				    helpers.each(self.datasets,function(dataset,datasetIndex){
+					helpers.each(dataset.bars,function(bar,index){
+					    if (!values[index]) values[index] = 0;
+					    values[index] += bar.value;
+					},self);
+				    },self);
+				} else {
+				    self.eachBars(function(bar){
 					values.push(bar.value);
-				});
+				    });
+				}
 				return values;
 			};
 
@@ -486,16 +497,17 @@
 			helpers.each(this.datasets,function(dataset,datasetIndex){
 				helpers.each(dataset.bars,function(bar,index){
 					if (bar.hasValue()){
-						bar.left = Math.round(this.scale.xScalePaddingLeft);
+					        if (!bar.startX) bar.startX = 0;
+					        bar.left = Math.round(this.scale.xScalePaddingLeft) + bar.startX;
+						if (this.datasets[datasetIndex + 1] && this.options.stacked == "x") this.datasets[datasetIndex + 1].bars[index].startX = (bar.startX - 51) + this.scale.calculateXInvertXY(bar.value); 
 						//Transition then draw
 						bar.transition({
-							x : this.scale.calculateXInvertXY(bar.value),
+							x : this.scale.calculateXInvertXY(bar.value) + bar.startX,
 							y : this.scale.calculateBarY(this.datasets.length, datasetIndex, index),
 							height : this.scale.calculateBarHeight(this.datasets.length)
 						}, easingDecimal).draw();
 					}
 				},this);
-
 			},this);
 		}
 	});
