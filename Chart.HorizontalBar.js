@@ -55,6 +55,7 @@
 
 			// Canvas doesn't allow us to stroke inside the width so we can
 			// adjust the sizes to fit if we're setting a stroke on the line
+			if (right < this.left) return;
 			if (this.showStroke){
 				top += halfStroke;
 				bottom -= halfStroke;
@@ -135,7 +136,7 @@
 					var yHeight = this.calculateBaseHeight(),
 						yAbsolute = (this.endPoint + this.calculateYInvertXY(barIndex) - (yHeight / 2)) - 5,
 						barHeight = this.calculateBarHeight(datasetCount);
-					if (datasetCount > 1 && (options.stacked != "z" || options.stacked != "x")) yAbsolute = yAbsolute + (barHeight * (datasetIndex - 1)) - (datasetIndex * options.barDatasetSpacing) + barHeight/2;
+					if (datasetCount > 1 && options.stacked != "z" && options.stacked != "x") yAbsolute = yAbsolute + (barHeight * (datasetIndex - 1)) - (datasetIndex * options.barDatasetSpacing) + barHeight/2;
 					return yAbsolute;
 				},
 
@@ -499,7 +500,7 @@
 					if (bar.hasValue()){
 					        if (!bar.startX) bar.startX = 0;
 					        bar.left = Math.round(this.scale.xScalePaddingLeft) + bar.startX;
-						if (this.datasets[datasetIndex + 1] && this.options.stacked == "x") this.datasets[datasetIndex + 1].bars[index].startX = (bar.startX - 51) + this.scale.calculateXInvertXY(bar.value); 
+						if (this.datasets[datasetIndex + 1] && this.options.stacked == "x") this.datasets[datasetIndex + 1].bars[index].startX = (bar.startX - Math.round(this.scale.xScalePaddingLeft)) + this.scale.calculateXInvertXY(bar.value); 
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateXInvertXY(bar.value) + bar.startX,
