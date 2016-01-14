@@ -506,6 +506,7 @@
 						if (this.datasets[datasetIndex + 1] && this.options.stacked == "x") {
 						      this.datasets[datasetIndex + 1].bars[index].startX = (bar.startX - Math.round(this.scale.xScalePaddingLeft)) + this.scale.calculateXInvertXY(bar.value); 
 						      this.datasets[datasetIndex + 1].bars[index]._saved.left = (this.datasets[datasetIndex + 1].bars[index].startX - ((((this.scale.calculateXInvertXY(bar.value) + bar.startX) - bar._saved.x) * ease) + bar._saved.x))/5;
+						      if (!this.datasets[datasetIndex + 1].bars[index]._saved.left) this.datasets[datasetIndex + 1].bars[index]._saved.left = 0;  
 						}
 						//Transition then draw
 						bar.transition({
