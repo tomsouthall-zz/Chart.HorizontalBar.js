@@ -155,7 +155,8 @@
     			this.buildCalculatedLabels();
     			if(this.buildYLabelCounter === 0) this.yLabels = this.xLabels;
           this.xLabels = this.calculatedLabels;
-    			this.yLabelWidth = (this.display && this.showLabels) ? helpers.longestText(this.ctx,this.font,this.yLabels) : 0;
+          
+    			this.yLabelWidth = (this.display && this.showLabels) ? helpers.longestText(this.ctx,this.font,this.yLabels) + 10 : 0;
     		},
 
         calculateX : function(index){
