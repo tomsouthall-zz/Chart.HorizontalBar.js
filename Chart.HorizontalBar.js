@@ -303,27 +303,33 @@
 			});
 
 			//Iterate through each of the datasets, and build this into a property of the chart
+			var dataPointValues = [];
 			helpers.each(data.datasets,function(dataset,datasetIndex){
-
-				var datasetObject = {
-					label : dataset.label || null,
-					fillColor : dataset.fillColor,
-					strokeColor : dataset.strokeColor,
-					bars : []
-				};
-
-				this.datasets.push(datasetObject);
-
-				helpers.each(dataset.data,function(dataPoint,index){
+			        helpers.each(dataset.data,function(dataPoint,index){
+					if (!dataPointValues[index]) dataPointValues[index] = [];
+					dataPointValues[index].push(dataPoint);
+				},this);
+			},this);
+			
+			helpers.each(dataPointValues,function(dataset,datasetIndex){        
+			        var datasetObject = {
+				    label : data.datasets[datasetIndex].label || null,
+				    fillColor : data.datasets[datasetIndex].fillColor,
+				    strokeColor : data.datasets[datasetIndex].strokeColor,
+				    bars : []
+				}
+				if (this.options.stacked == "z") dataset.sort(function(a, b){return b-a});
+				helpers.each(dataset,function(dataPoint,index){
+				        if (!this.datasets[index]) this.datasets[index] = (JSON.parse(JSON.stringify(datasetObject)));
 					//Add a new point for each piece of data, passing any required data to draw.
-					datasetObject.bars.push(new this.BarClass({
+					this.datasets[index].bars.push(new this.BarClass({
 						value : dataPoint,
-						label : data.labels[index],
-						datasetLabel: dataset.label,
-						strokeColor : dataset.strokeColor,
-						fillColor : dataset.fillColor,
-						highlightFill : dataset.highlightFill || dataset.fillColor,
-						highlightStroke : dataset.highlightStroke || dataset.strokeColor
+						label : data.labels[datasetIndex],
+						datasetLabel: data.datasets[index].label,
+						strokeColor : data.datasets[index].strokeColor,
+						fillColor : data.datasets[index].fillColor,
+						highlightFill : data.datasets[index].highlightFill || data.datasets[index].fillColor,
+						highlightStroke : data.datasets[index].highlightStroke || data.datasets[index].strokeColor
 					}));
 				},this);
 
