@@ -498,14 +498,20 @@
 			helpers.each(this.datasets,function(dataset,datasetIndex){
 				helpers.each(dataset.bars,function(bar,index){
 					if (bar.hasValue()){
-					        if (!bar.startX) bar.startX = 0;
-					        bar.left = Math.round(this.scale.xScalePaddingLeft) + bar.startX;
-						if (this.datasets[datasetIndex + 1] && this.options.stacked == "x") this.datasets[datasetIndex + 1].bars[index].startX = (bar.startX - Math.round(this.scale.xScalePaddingLeft)) + this.scale.calculateXInvertXY(bar.value); 
+					        if (!bar.startX) {
+						    bar.startX = 0;
+						    bar._saved.left = Math.round(this.scale.xScalePaddingLeft);
+						}
+						if (this.datasets[datasetIndex + 1] && this.options.stacked == "x") {
+						      this.datasets[datasetIndex + 1].bars[index].startX = (bar.startX - Math.round(this.scale.xScalePaddingLeft)) + this.scale.calculateXInvertXY(bar.value); 
+						      this.datasets[datasetIndex + 1].bars[index]._saved.left = (this.datasets[datasetIndex + 1].bars[index].startX - ((((this.scale.calculateXInvertXY(bar.value) + bar.startX) - bar._saved.x) * ease) + bar._saved.x))/5;
+						}
 						//Transition then draw
 						bar.transition({
 							x : this.scale.calculateXInvertXY(bar.value) + bar.startX,
 							y : this.scale.calculateBarY(this.datasets.length, datasetIndex, index),
-							height : this.scale.calculateBarHeight(this.datasets.length)
+							height : this.scale.calculateBarHeight(this.datasets.length),
+							left : Math.round(this.scale.xScalePaddingLeft) + bar.startX
 						}, easingDecimal).draw();
 					}
 				},this);
