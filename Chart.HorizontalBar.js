@@ -306,30 +306,30 @@
 			var dataPointValues = [];
 			helpers.each(data.datasets,function(dataset,datasetIndex){
 			        helpers.each(dataset.data,function(dataPoint,index){
-					if (!dataPointValues[index]) dataPointValues[index] = [];
-					dataPointValues[index].push(dataPoint);
+					if (!dataPointValues[index]) dataPointValues[index] = [];   
+					dataPointValues[index].push({"index":datasetIndex,"value":dataPoint});
 				},this);
 			},this);
 			
-			helpers.each(dataPointValues,function(dataset,datasetIndex){        
-			        var datasetObject = {
-				    label : data.datasets[datasetIndex].label || null,
-				    fillColor : data.datasets[datasetIndex].fillColor,
-				    strokeColor : data.datasets[datasetIndex].strokeColor,
-				    bars : []
-				}
-				if (this.options.stacked == "z") dataset.sort(function(a, b){return b-a});
+			helpers.each(dataPointValues,function(dataset,datasetIndex){ 
+				if (this.options.stacked == "z") dataset.sort(function(a, b){return b.value-a.value});
 				helpers.each(dataset,function(dataPoint,index){
-				        if (!this.datasets[index]) this.datasets[index] = (JSON.parse(JSON.stringify(datasetObject)));
+				        var datasetObject = {
+					    label : data.datasets[dataPoint.index].label || null,
+					    fillColor : data.datasets[dataPoint.index].fillColor,
+					    strokeColor : data.datasets[dataPoint.index].strokeColor,
+					    bars : []
+					}
+				        if (!this.datasets[dataPoint.index]) this.datasets[dataPoint.index] = (JSON.parse(JSON.stringify(datasetObject)));
 					//Add a new point for each piece of data, passing any required data to draw.
 					this.datasets[index].bars.push(new this.BarClass({
-						value : dataPoint,
-						label : data.labels[datasetIndex],
-						datasetLabel: data.datasets[index].label,
-						strokeColor : data.datasets[index].strokeColor,
-						fillColor : data.datasets[index].fillColor,
-						highlightFill : data.datasets[index].highlightFill || data.datasets[index].fillColor,
-						highlightStroke : data.datasets[index].highlightStroke || data.datasets[index].strokeColor
+						value : dataPoint.value,
+						label : data.labels[index],
+						datasetLabel: data.datasets[dataPoint.index].label,
+						strokeColor : data.datasets[dataPoint.index].strokeColor,
+						fillColor : data.datasets[dataPoint.index].fillColor,
+						highlightFill : data.datasets[dataPoint.index].highlightFill || data.datasets[dataPoint.index].fillColor,
+						highlightStroke : data.datasets[dataPoint.index].highlightStroke || data.datasets[dataPoint.index].strokeColor
 					}));
 				},this);
 
