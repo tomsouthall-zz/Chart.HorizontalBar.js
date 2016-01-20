@@ -324,7 +324,7 @@
 					//Add a new point for each piece of data, passing any required data to draw.
 					this.datasets[index].bars.push(new this.BarClass({
 						value : dataPoint.value,
-						label : data.labels[index],
+						label : data.labels[datasetIndex],
 						datasetLabel: data.datasets[dataPoint.index].label,
 						strokeColor : data.datasets[dataPoint.index].strokeColor,
 						fillColor : data.datasets[dataPoint.index].fillColor,
